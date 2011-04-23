@@ -177,5 +177,12 @@ class CustomerTransformation{
     $this->mw_import->executeQuery( $update_to_merge_table_query );
   }
   
-
+  /**
+   *
+   */
+    public function cleanUp(){
+    
+    $this->mw_import->closeConnection();
+    return 'cleanUp';
+  }
 }
