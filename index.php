@@ -20,6 +20,8 @@ $hotel_import = new HotelTransformation();
 
 $ct->buildCreateStatements();
 $ct->createTempTables();
+$ct->createErrorTable();
+$cust_import->separateErrors();
 
 
 

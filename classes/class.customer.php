@@ -16,7 +16,26 @@ class CustomerTransformation{
   }
   
   
- public function writeViaggiCustomerToEtl(){
+  /**
+   *
+   */
+  public function separateErrors(){
+    print( '<h2>write errors to their own table</h2>' );
+    $base_query = '
+    INSERT INTO ETLErrors( CustomerID, Age, originatingTable) 
+    SELECT CustomerID, Age,  (\'%s\') as originatingTable FROM vi_customers 
+    WHERE Age < %d OR Age > %d';
+    $error_queries['vi_customers'] = sprintf( $base_query, 'vi_customers', 18, 120 );
+    $error_queries['gb_customers'] = sprintf( $base_query, 'gb_customers', 18, 120 );
+    $error_queries['mt_customers'] = sprintf( $base_query, 'mt_customers', 18, 120 );
+    
+    foreach ($error_queries as $error_query){
+      print $error_query . '<br/>';
+      $this->mw_import->executeQuery( $error_query );
+    }
+  }
+  
+  public function writeViaggiCustomerToEtl(){
     
     
     
@@ -24,7 +43,7 @@ class CustomerTransformation{
     //IMPORT DATA INTO TEMP TABLE
 
     $insert_queries['temp_viaggi'] = 'INSERT INTO temp_viaggi_customers ( customerID, CName, CSurname, Age, Gender, CountryID )
-     SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM vi_customers WHERE Age > 18 AND Age < 120
+     SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM vi_customers WHERE Age > 17 AND Age < 121
     ;';
     print('<h2>Customers</h2>');
     

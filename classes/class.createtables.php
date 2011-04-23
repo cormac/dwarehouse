@@ -6,7 +6,7 @@ class CreateTables{
   private $tables;
   private $create_sql;
   private $temp_table_sql;
-  
+  private $error_tables;
   
   public function __construct(){
     $this->mw_import = new MysqlWrapper('dw_import');
@@ -20,6 +20,22 @@ class CreateTables{
    *
    */
   public function createErrorTable(){
+    $this->error_tables['ETLErrors'] = '
+      CREATE TABLE ETLErrors (
+    errorID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    customerID int,
+    Age int,
+    originatingTable varchar(12)
+    );
+    ';
+    $this->clearTables($this->error_tables, 'Clear the error table' );
+    print('<h3>Create the error tables</h3>');
+    foreach ($this->error_tables as $create_query)
+    {
+       $this->mw_import->executeQuery( $create_query );
+       print($create_query . '<br/>');
+    }
+    
     
   }
   
@@ -185,6 +201,8 @@ class CreateTables{
    
     
   }
+  
+  
   
   
   public function createTempTables(){
