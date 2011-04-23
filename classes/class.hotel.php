@@ -22,24 +22,9 @@ class HotelTransformation{
   }
   
   
-  
-  /**
-   *
-   '
-    CREATE TABLE temp_gb_hotel (
-      HotelID int,
-      Hname varchar(50),
-      HAddress varchar(200),
-      Category int,
-      Telephone varchar(20),
-      NRoom int,
-      CityID int,
-      ManagerID varchar(10),
-      str_HotelID varchar(10),
-      str_category varchar(8),
-      
-    );
-   */
+  /*
+  write goodby.com hotel table data to the merge table   
+  */
   public function writeGBHotelToEtl(){
     // IMPORT THE DATA FROM ORIGINAL TABLE
     $insert_query = 'INSERT INTO temp_gb_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, str_category, ManagerID) 
