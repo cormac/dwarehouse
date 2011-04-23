@@ -10,7 +10,6 @@ class CustomerTransformation{
   
   public function __construct(){
     $this->mw_import = new MysqlWrapper('dw_import');
-    krumo($this->mw_import);
     $this->mw_import->openConnection();
     $this->tables = array('merge_customers');
   }

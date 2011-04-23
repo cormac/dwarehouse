@@ -17,7 +17,6 @@ class HotelTransformation{
   
   public function __construct(){
     $this->mw_import = new MysqlWrapper('dw_import');
-    krumo($this->mw_import);
     $this->mw_import->openConnection();
   }
   

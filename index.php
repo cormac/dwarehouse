@@ -58,7 +58,7 @@ $hotel_import->writeGBHotelToEtl();
 
 foreach( $vars as $var ){
   try{
-    krumo( $$var->cleanUp() );
+     $$var->cleanUp();
   }catch(Exception $e){
     krumo( $e );
   }
