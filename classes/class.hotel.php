@@ -27,9 +27,12 @@ class HotelTransformation{
   public function writeGBHotelToEtl(){
     $this->printer->output( '<h2>GoodBye.com</h2>' );
     // IMPORT THE DATA FROM ORIGINAL TABLE
-    $insert_query = 'INSERT INTO temp_gb_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, str_category, ManagerID) 
-    SELECT CONVERT(HotelID, SIGNED) AS hotel, Hname, HAddress, Telephone, NRoom, CityID, Category, 
-    (SELECT ManagerID FROM mt_hotelmanager WHERE ManagerName =\'Mary\' AND ManagerSurname=\'Summer\' ) as ManagerID FROM gb_hotel';
+    $insert_query = 'INSERT INTO temp_gb_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, int_mt_cityID, str_category, ManagerID) 
+    SELECT CONVERT(HotelID, SIGNED) AS hotel, Hname, HAddress, Telephone, NRoom, gb_hotel.CityID, mt_city.CityID, Category, 
+    (SELECT ManagerID FROM mt_hotelmanager WHERE ManagerName =\'Mary\' AND ManagerSurname=\'Summer\' ) as ManagerID 
+    FROM gb_hotel
+    JOIN gb_city ON gb_city.CityID = gb_hotel.CityID
+    JOIN mt_city ON gb_city.CityName = mt_city.CityName';
     
     $this->printer->output ('<h3> Insert </h3><p>Note that although stated in the assignment that hotelID was a string the import provides it as an integer</p>' . $insert_query);
     $this->mw_import->executeQuery( $insert_query );
@@ -39,7 +42,7 @@ class HotelTransformation{
     for($i=1; $i<6; $i++){
       $update_queries['category_' . $i] = sprintf('UPDATE temp_gb_hotel SET Category = %d WHERE str_category = \'%s star\';', $i, $i);
     }
-    
+    $update_queries['cityID'] = 'UPDATE temp_gb_hotel SET CityID=int_mt_cityID';
     $this->printer->output('<h3>update the data</h3>'); 
     foreach ($update_queries as $update_query){
     
@@ -81,8 +84,12 @@ class HotelTransformation{
   public function writeViaggiHotelToEtl(){
     $this->printer->output('<h2>Viaggi</h2>');
       // IMPORT THE DATA FROM ORIGINAL TABLE
-    $insert_query = 'INSERT INTO temp_viaggi_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, str_category, ManagerID) 
-    SELECT HotelID AS hotel, Hname, HAddress, Telephone, NRoom, CityID, Category, (SELECT ManagerID FROM mt_hotelmanager WHERE ManagerName =\'John\' AND ManagerSurname=\'Smith\' ) as ManagerID FROM vi_hotel';
+    $insert_query = 'INSERT INTO temp_viaggi_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, int_mt_cityID, str_category, ManagerID) 
+    SELECT HotelID AS hotel, Hname, HAddress, Telephone, NRoom, vi_hotel.CityID, mt_city.CityID, Category, 
+      (SELECT ManagerID FROM mt_hotelmanager WHERE ManagerName =\'John\' AND ManagerSurname=\'Smith\' ) as ManagerID
+    FROM vi_hotel
+    JOIN vi_city ON vi_city.CityID = vi_hotel.CityID
+    JOIN mt_city ON vi_city.CityName = mt_city.CityName';
     
     
     $this->printer->output ('<h3> Insert </h3>' . $insert_query);
@@ -93,7 +100,7 @@ class HotelTransformation{
     for($i=1; $i<6; $i++){
       $update_queries['category_' . $i] = sprintf('UPDATE temp_viaggi_hotel SET Category = %d WHERE str_category = \'%s star\';', $i, $i);
     }
-    
+    $update_queries['cityID'] = 'UPDATE temp_viaggi_hotel SET CityID=int_mt_cityID';
     $this->printer->output('<h3>update the data</h3>'); 
     foreach ($update_queries as $update_query){
     

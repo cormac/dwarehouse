@@ -252,7 +252,8 @@ class CreateTables{
       NRoom int,
       CityID int,
       ManagerID varchar(10),
-      str_category varchar(8)
+      str_category varchar(8),
+      int_mt_cityID int
       
     );
     ';
@@ -266,8 +267,8 @@ class CreateTables{
       NRoom int,
       CityID int,
       ManagerID varchar(10),
-      str_category varchar(8)
-      
+      str_category varchar(8),
+      int_mt_cityID int
     );
     ';
     

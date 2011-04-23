@@ -14,10 +14,10 @@ foreach ($classes as $class){
 }
 
 $ct = new CreateTables(false);
-$cust_import = new CustomerTransformation();
+$cust_import = new CustomerTransformation(false);
 $hotel_import = new HotelTransformation();
-$location_import = new LocationTransformation();
-$office_import = new OfficeTransformation();
+$location_import = new LocationTransformation(false);
+$office_import = new OfficeTransformation(false);
 
 
 
