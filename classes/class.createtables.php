@@ -7,13 +7,14 @@ class CreateTables{
   private $create_sql;
   private $temp_table_sql;
   private $error_tables;
+  private $verbose;
+  private $printer;
   
-  public function __construct(){
+  public function __construct($verbose = true){
     $this->mw_import = new MysqlWrapper('dw_import');
-    $this->mw_import->openConnection();
-    //$this->mw_import = new MysqlWrapper('dw_etl');
-    //$this->mw_import->openConnection();
+    $this->verbose = $verbose;
     $this->tables = array('merge_customers');
+    $this->printer = new Printer($verbose);
   }
   
   /**
@@ -22,31 +23,38 @@ class CreateTables{
   public function createErrorTable(){
     $this->error_tables['ETLErrors'] = '
       CREATE TABLE ETLErrors (
-    errorID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    customerID int,
-    Age int,
-    originatingTable varchar(12)
-    );
+        errorID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        customerID int,
+        Age int,
+        originatingTable varchar(12)
+      );
     ';
     $this->clearTables($this->error_tables, 'Clear the error table' );
-    print('<h3>Create the error tables</h3>');
+    $this->printer->output('<h3>Create the error tables</h3>');
     foreach ($this->error_tables as $create_query)
     {
        $this->mw_import->executeQuery( $create_query );
-       print($create_query . '<br/>');
+       $this->printer->output($create_query . '<br/>');
     }
     
     
   }
   
   private function clearTables($tables, $label){
-    print( '<h3>' . $label . '</h3>' );
+    $this->printer->output( '<h3>' . $label . '</h3>' );
     foreach ($tables as $key => $statement){
       $clear_statement = sprintf('DROP TABLE IF EXISTS %s;', $key);
-      print( $clear_statement . '<br/>');
+      $this->printer->output( $clear_statement . '<br/>');
       $this->mw_import->executeQuery( $clear_statement );
     }
     
+  }
+  
+  /**
+   *
+   */
+  private function output($text){
+    if($verbose)print($text);
   }
   
   /**
@@ -59,7 +67,7 @@ class CreateTables{
   *****************************************************************************************************************/
   public function buildCreateStatements(){
   
-    print( '<h1>Staging Tables</h1>' );
+    $this->printer->output( '<h1>Staging Tables</h1>' );
     $cid = 'S';
     $this->create_sql['merge_customers'] = sprintf( 
     'CREATE TABLE merge_customers (
@@ -192,11 +200,11 @@ class CreateTables{
     
     $this->clearTables($this->create_sql, 'Clear the staging tables' );
     
-    print('<h3>Create the staging tables</h3>');
+    $this->printer->output('<h3>Create the staging tables</h3>');
     foreach ($this->create_sql as $create_query)
     {
        $this->mw_import->executeQuery( $create_query );
-       print($create_query . '<br/>');
+       $this->printer->output($create_query . '<br/>');
     }
    
     
@@ -206,7 +214,7 @@ class CreateTables{
   
   
   public function createTempTables(){
-    print('<h1> Create temporary Tables </h1>');
+    $this->printer->output('<h1> Create temporary Tables </h1>');
     
     
     $this->temp_table_sql['temp_viaggi_customers'] = sprintf( 
@@ -263,6 +271,29 @@ class CreateTables{
     );
     ';
     
+    $this->temp_table_sql['temp_gb_offices'] = '
+      CREATE TABLE temp_gb_offices (
+        OfficeId int,
+        OfficeName varchar(50),
+        OAddress varchar(50),
+        CityID int,
+        OType int,
+        int_CityID int,
+        int_mt_cityID int
+      );';
+    
+    $this->temp_table_sql['temp_vi_offices'] ='
+      CREATE TABLE temp_vi_offices (
+        OfficeId int,
+        OfficeName varchar(50),
+        OAddress varchar(50),
+        CityID int,
+        OType int,
+        int_CityID int,
+        int_mt_cityID int
+      );';
+      
+      
     
     
     $this->clearTables($this->temp_table_sql, 'Clear temp tables' );
@@ -271,7 +302,7 @@ class CreateTables{
     foreach ($this->temp_table_sql as $temp_query){
     
        $this->mw_import->executeQuery( $temp_query );
-       print($temp_query . '<br/>');
+       $this->printer->output($temp_query . '<br/>');
        
     }
     

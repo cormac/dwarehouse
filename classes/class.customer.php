@@ -6,12 +6,13 @@ class CustomerTransformation{
   private $tables;
   private $create_sql;
   private $temp_table_sql;
+  private $printer;
   
-  
-  public function __construct(){
+  public function __construct($verbose = true){
     $this->mw_import = new MysqlWrapper('dw_import');
-    $this->mw_import->openConnection();
     $this->tables = array('merge_customers');
+    $this->printer = new Printer($verbose);
+    $this->printer->output( '<h1>Customer Translation</h2>' );
   }
   
   
@@ -19,7 +20,7 @@ class CustomerTransformation{
    *
    */
   public function separateErrors(){
-    print( '<h2>write errors to their own table</h2>' );
+    $this->printer->output( '<h2>write errors to their own table</h2>' );
     $base_query = '
     INSERT INTO ETLErrors( CustomerID, Age, originatingTable) 
     SELECT CustomerID, Age,  (\'%s\') as originatingTable FROM vi_customers 
@@ -29,14 +30,14 @@ class CustomerTransformation{
     $error_queries['mt_customers'] = sprintf( $base_query, 'mt_customers', 18, 120 );
     
     foreach ($error_queries as $error_query){
-      print $error_query . '<br/>';
+      $this->printer->output ($error_query . '<br/>');
       $this->mw_import->executeQuery( $error_query );
     }
   }
   
   public function writeViaggiCustomerToEtl(){
     
-    
+    $this->printer->output('<h2>Viaggi</h2>');
     
     
     //IMPORT DATA INTO TEMP TABLE
@@ -44,15 +45,15 @@ class CustomerTransformation{
     $insert_queries['temp_viaggi'] = 'INSERT INTO temp_viaggi_customers ( customerID, CName, CSurname, Age, Gender, CountryID )
      SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM vi_customers WHERE Age > 17 AND Age < 121
     ;';
-    print('<h2>Customers</h2>');
+    $this->printer->output('<h2>Customers</h2>');
     
     
     
-    print('<h3>insert temporary data</h3>'); 
+    $this->printer->output('<h3>insert temporary data</h3>'); 
     foreach ($insert_queries as $insert_query){
     
        $this->mw_import->executeQuery( $insert_query );
-       print($insert_query . '<br/>');
+       $this->printer->output($insert_query . '<br/>');
        
     }
     
@@ -85,11 +86,11 @@ class CustomerTransformation{
     
     
     
-    print('<h3>update the data</h3>'); 
+    $this->printer->output('<h3>update the data</h3>'); 
     foreach ($update_queries as $update_query){
     
        $this->mw_import->executeQuery( $update_query );
-       print($update_query . '<br/>');
+       $this->printer->output($update_query . '<br/>');
        
     }
     
@@ -99,8 +100,8 @@ class CustomerTransformation{
     'INSERT INTO merge_customers (customerID, Cname, Csurname, Age, Gender, CountryID) 
     SELECT customerID, Cname, Csurname, Age, gender_target, country_id_target FROM temp_viaggi_customers;';
     
-    print('<h3>write to merge viaggi</h3>'); 
-    print($update_to_merge_table_query); 
+    $this->printer->output('<h3>write to merge viaggi</h3>'); 
+    $this->printer->output($update_to_merge_table_query); 
     
     $this->mw_import->executeQuery( $update_to_merge_table_query );
   }
@@ -112,13 +113,14 @@ class CustomerTransformation{
    *
    */
   public function writeMTCustomerToEtl(){
+    $this->printer->output('<h2>My Travel</h2>');
     $update_to_merge_table_query = 
     'INSERT INTO merge_customers 
     (customerID, Cname, Csurname, Age, Gender, CountryID) 
     SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM MT_Customers;';
     
-    print('<h3>write to merge mt</h3>'); 
-    print($update_to_merge_table_query); 
+    $this->printer->output('<h3>write to merge mt</h3>'); 
+    $this->printer->output($update_to_merge_table_query); 
     $this->mw_import->executeQuery( $update_to_merge_table_query );
   }
   
@@ -130,10 +132,10 @@ class CustomerTransformation{
    */
   public function writeGBCustomerToEtl(){
     
-    
+    $this->printer->output('<h2>GoodBye.com</h2>');
     // WRITE TO TEMP TABLE
     
-    print('<h2>Customers</h2>');
+    $this->printer->output('<h2>Customers</h2>');
     $insert_queries['gb_customer'] = 'INSERT INTO temp_gb_customers ( customerID, CName, CSurname, Age, Gender, CountryID )
      SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM gb_customers WHERE Age > 18 AND Age < 120
     ;';
@@ -141,11 +143,11 @@ class CustomerTransformation{
 
     
     
-    print('<h3>insert temporary data</h3>'); 
+    $this->printer->output('<h3>insert temporary data</h3>'); 
     foreach ($insert_queries as $insert_query){
     
        $this->mw_import->executeQuery( $insert_query );
-       print($insert_query . '<br/>');
+       $this->printer->output($insert_query . '<br/>');
        
     }
     //REPLACE MALE AND FEMALE
@@ -176,11 +178,11 @@ class CustomerTransformation{
       $update_queries[] = sprintf('UPDATE temp_gb_customers SET country_id_target=%d WHERE CountryID=\'%s\'', $row->CountryID, $country_id); 
     }
     
-    print('<h3>update the data</h3>'); 
+    $this->printer->output('<h3>update the data</h3>'); 
     foreach ($update_queries as $update_query){
     
        $this->mw_import->executeQuery( $update_query );
-       print($update_query . '<br/>');
+       $this->printer->output($update_query . '<br/>');
        
     }
     
@@ -189,8 +191,8 @@ class CustomerTransformation{
     'INSERT INTO merge_customers (customerID, Cname, Csurname, Age, Gender, CountryID) 
     SELECT customerID, Cname, Csurname, Age, gender_target, country_id_target FROM temp_gb_customers;';
     
-    print('<h3>write to merge gb</h3>'); 
-    print($update_to_merge_table_query); 
+    $this->printer->output('<h3>write to merge gb</h3>'); 
+    $this->printer->output($update_to_merge_table_query); 
     
     $this->mw_import->executeQuery( $update_to_merge_table_query );
   }

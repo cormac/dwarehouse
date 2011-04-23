@@ -1,22 +1,25 @@
 <?php
-
-$vars = array( 'ct', 'cust_import', 'hotel_import' );
-
 include( 'krumo/class.krumo.php' );
-include( 'classes/class.mysqlwrapper.php' );
-include( 'classes/class.createtables.php' );
-include( 'classes/class.customer.php' );
-include( 'classes/class.hotel.php' );
+
+$vars = array( 'ct', 'cust_import', 'hotel_import',  );
+$classes = array( 'mysqlwrapper', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer'  );
 
 
 
 
-$ct = new CreateTables();
+foreach ($classes as $class){
+  $file = 'classes/class.' . $class . '.php';
+  require ($file);
+//  include( 'classes/class.' . $class . '.php' );
+}
 
-
+$ct = new CreateTables(false);
 $cust_import = new CustomerTransformation();
-
 $hotel_import = new HotelTransformation();
+$location_import = new LocationTransformation();
+$office_import = new OfficeTransformation();
+
+
 
 $ct->buildCreateStatements();
 $ct->createTempTables();
@@ -24,37 +27,68 @@ $ct->createErrorTable();
 $cust_import->separateErrors();
 
 
+/*****************************************************************************************************************
 
-print( '<h1>Customer Translation</h2>' );
-print('<h2>Viaggi</h2>');
+  CUSTOMER IMPORT
+
+*****************************************************************************************************************/
+
+
 $cust_import->writeViaggiCustomerToEtl();
-
-
-print('<h2>My Travel</h2>');
 
 $cust_import->writeMTCustomerToEtl();
 
-
-print('<h2>GoodBte.com</h2>');
 $cust_import->writeGBCustomerToEtl();
 
+/*****************************************************************************************************************
 
-print( '<h1>Hotel Translation</h2>' );
-print('<h2>Viaggi</h2>');
-krumo('hello');
+  HOTEL IMPORT
+
+*****************************************************************************************************************/
+
+
 
 $hotel_import->writeViaggiHotelToEtl();
 
-
-
-print('<h2>My Travel</h2>');
 $hotel_import->writeMTHotelToEtl();
-print('<h2>GoodBye.com</h2>');
+
 $hotel_import->writeGBHotelToEtl();
 
 
+/*****************************************************************************************************************
+
+  OFFICE IMPORT
+
+*****************************************************************************************************************/
 
 
+$office_import->writeGBOfficeToEtl();
+$office_import->writeMTOfficeToEtl();
+$office_import->writeViaggiOfficeToEtl();
+
+
+
+
+/*****************************************************************************************************************
+
+  LOCATION IMPORT
+
+*****************************************************************************************************************/
+
+
+$location_import->importContinentTableContents();
+
+
+
+
+
+
+
+/*****************************************************************************************************************
+
+  CLOSE DB CONNECTIONS
+
+*****************************************************************************************************************/
 
 foreach( $vars as $var ){
   try{

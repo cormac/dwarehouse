@@ -11,6 +11,7 @@ class MysqlWrapper{
  */
   public function __construct($db){
     $this->db = $db;
+    $this->openConnection();
   }
   public function openConnection(){
     $this->link = mysql_connect( 'localhost', 'root', 'edils0424' );
