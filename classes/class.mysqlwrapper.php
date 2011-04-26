@@ -6,11 +6,14 @@ class MysqlWrapper{
   private $link;
   private $result;
   private $db;
+  private $printer;
+  
 /**
  *
  */
-  public function __construct($db){
+  public function __construct( $db, $verbose = true ){
     $this->db = $db;
+    $this->printer = new Printer( $verbose );
     $this->openConnection();
   }
   public function openConnection(){
@@ -24,7 +27,7 @@ class MysqlWrapper{
   
   public function executeQuery( $query ){
     $this->result = mysql_query( $query, $this->link );
-    
+    $this->printer->output( $query . '<br/>');
   }
   
   public function __get($key) {

@@ -11,7 +11,7 @@ class CreateTables{
   private $printer;
   
   public function __construct($verbose = true){
-    $this->mw_import = new MysqlWrapper('dw_import');
+    $this->mw_import = new MysqlWrapper('dw_import', $verbose);
     $this->verbose = $verbose;
     $this->tables = array('merge_customers');
     $this->printer = new Printer($verbose);
@@ -34,7 +34,7 @@ class CreateTables{
     foreach ($this->error_tables as $create_query)
     {
        $this->mw_import->executeQuery( $create_query );
-       $this->printer->output($create_query . '<br/>');
+
     }
     
     
@@ -44,7 +44,6 @@ class CreateTables{
     $this->printer->output( '<h3>' . $label . '</h3>' );
     foreach ($tables as $key => $statement){
       $clear_statement = sprintf('DROP TABLE IF EXISTS %s;', $key);
-      $this->printer->output( $clear_statement . '<br/>');
       $this->mw_import->executeQuery( $clear_statement );
     }
     
@@ -204,7 +203,6 @@ class CreateTables{
     foreach ($this->create_sql as $create_query)
     {
        $this->mw_import->executeQuery( $create_query );
-       $this->printer->output($create_query . '<br/>');
     }
    
     
@@ -303,9 +301,9 @@ class CreateTables{
     foreach ($this->temp_table_sql as $temp_query){
     
        $this->mw_import->executeQuery( $temp_query );
-       $this->printer->output($temp_query . '<br/>');
        
     }
+    
     
   }
   

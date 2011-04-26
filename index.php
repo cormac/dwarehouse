@@ -2,23 +2,20 @@
 include( 'krumo/class.krumo.php' );
 
 $vars = array( 'ct', 'cust_import', 'hotel_import',  );
-$classes = array( 'mysqlwrapper', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer'  );
+$classes = array( 'mysqlwrapper', 'transform', 'operators', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer' );
 
-
-
-
-foreach ($classes as $class){
+foreach ( $classes as $class ){
   $file = 'classes/class.' . $class . '.php';
-  require ($file);
-//  include( 'classes/class.' . $class . '.php' );
+  include( $file );
+
 }
-
-$ct = new CreateTables(false);
-$cust_import = new CustomerTransformation(false);
-$hotel_import = new HotelTransformation();
-$location_import = new LocationTransformation(false);
-$office_import = new OfficeTransformation(false);
-
+$verbose          = true;
+$ct               = new CreateTables( $verbose );
+$cust_import      = new CustomerTransformation( $verbose );
+$hotel_import     = new HotelTransformation(  );
+$location_import  = new LocationTransformation( $verbose );
+$office_import    = new OfficeTransformation( $verbose );
+$operator_import  = new OperatorTransformation( $verbose );
 
 
 $ct->buildCreateStatements();
@@ -33,11 +30,8 @@ $cust_import->separateErrors();
 
 *****************************************************************************************************************/
 
-
 $cust_import->writeViaggiCustomerToEtl();
-
 $cust_import->writeMTCustomerToEtl();
-
 $cust_import->writeGBCustomerToEtl();
 
 /*****************************************************************************************************************
@@ -46,14 +40,9 @@ $cust_import->writeGBCustomerToEtl();
 
 *****************************************************************************************************************/
 
-
-
-$hotel_import->writeViaggiHotelToEtl();
-
-$hotel_import->writeMTHotelToEtl();
-
 $hotel_import->writeGBHotelToEtl();
-
+$hotel_import->writeViaggiHotelToEtl();
+$hotel_import->writeMTHotelToEtl();
 
 /*****************************************************************************************************************
 
@@ -61,13 +50,9 @@ $hotel_import->writeGBHotelToEtl();
 
 *****************************************************************************************************************/
 
-
 $office_import->writeGBOfficeToEtl();
 $office_import->writeMTOfficeToEtl();
 $office_import->writeViaggiOfficeToEtl();
-
-
-
 
 /*****************************************************************************************************************
 
@@ -75,14 +60,15 @@ $office_import->writeViaggiOfficeToEtl();
 
 *****************************************************************************************************************/
 
-
 $location_import->importContinentTableContents();
 
+/*****************************************************************************************************************
 
+  OPERATOR IMPORT
 
+*****************************************************************************************************************/
 
-
-
+$operator_import->writeOperatorsToEtl( );
 
 /*****************************************************************************************************************
 
