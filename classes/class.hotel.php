@@ -3,7 +3,7 @@
 
 Created By    : Cormac McGuire - cromac
 Created Date  : 23/04/11
-Description   : Perform transformations on the hotel table
+Description   : Perform transformations on the hotel tables
                  
                 
 Updated By    :
