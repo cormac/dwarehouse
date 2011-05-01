@@ -9,10 +9,12 @@ foreach ( $classes as $class ){
   include( $file );
 
 }
-$verbose          = true;
+
+
+$verbose          = false;
 $ct               = new CreateTables( $verbose );
 $cust_import      = new CustomerTransformation( $verbose );
-$hotel_import     = new HotelTransformation(  );
+$hotel_import     = new HotelTransformation( $verbose );
 $location_import  = new LocationTransformation( $verbose );
 $office_import    = new OfficeTransformation( $verbose );
 $operator_import  = new OperatorTransformation( $verbose );
@@ -60,7 +62,7 @@ $office_import->writeViaggiOfficeToEtl();
 
 *****************************************************************************************************************/
 
-$location_import->importContinentTableContents();
+$location_import->importLocationTableContents();
 
 /*****************************************************************************************************************
 
@@ -83,4 +85,4 @@ foreach( $vars as $var ){
     krumo( $e );
   }
 }
-/* A change*/
+

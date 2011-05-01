@@ -62,7 +62,7 @@ class CustomerTransformation extends Transformer{
     (customerID, Cname, Csurname, Age, Gender, CountryID) 
     SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM MT_Customers;';
     
-    $this->printer->output('<h3>write to merge mt</h3>'); 
+    $this->printer->output( '<h3>write to merge mt</h3>' ); 
 
     $this->mw_import->executeQuery( $update_to_merge_table_query );
   }

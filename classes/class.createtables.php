@@ -94,12 +94,17 @@ class CreateTables{
       , $cid
     );
     
-    $this->create_sql['merge_city'] = sprintf(
-      'CREATE TABLE merge_city (
-      %sCityID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-      CityId int,
+    $this->create_sql['merge_location'] = sprintf(
+      'CREATE TABLE merge_location (
+      LocationID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
       CityName varchar(50),
-      RegionID int
+      RegionName varchar(50),
+      CountryName varchar(50),
+      ContinentName varchar(50),
+      CityId int,
+      RegionID int,
+      CountryID int,
+      ContinentID int
       );'
       , $cid
     );
