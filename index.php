@@ -2,7 +2,7 @@
 include( 'krumo/class.krumo.php' );
 
 $vars = array( 'ct', 'cust_import', 'hotel_import',  );
-$classes = array( 'mysqlwrapper', 'transform', 'operators', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer' );
+$classes = array( 'mysqlwrapper', 'transform', 'operators', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer', 'holiday' );
 
 foreach ( $classes as $class ){
   $file = 'classes/class.' . $class . '.php';
@@ -11,13 +11,15 @@ foreach ( $classes as $class ){
 }
 
 
-$verbose          = false;
-$ct               = new CreateTables( $verbose );
-$cust_import      = new CustomerTransformation( $verbose );
-$hotel_import     = new HotelTransformation( $verbose );
-$location_import  = new LocationTransformation( $verbose );
-$office_import    = new OfficeTransformation( $verbose );
-$operator_import  = new OperatorTransformation( $verbose );
+$verbose                = false;
+$ct                     = new CreateTables( $verbose );
+$cust_import            = new CustomerTransformation( $verbose );
+$hotel_import           = new HotelTransformation( $verbose );
+$location_import        = new LocationTransformation( $verbose );
+$office_import          = new OfficeTransformation( $verbose );
+$operator_import        = new OperatorTransformation( $verbose );
+$holiday_import         = new HolidayTransformation( $verbose );
+$holiday_derails_import = new HolidayDetailsTransformation( true );
 
 
 $ct->buildCreateStatements();
@@ -70,7 +72,20 @@ $location_import->importLocationTableContents();
 
 *****************************************************************************************************************/
 
+$holiday_import->writeHolidaysToEtl( );
+
+
+/*****************************************************************************************************************
+
+  OPERATOR IMPORT
+
+*****************************************************************************************************************/
+
 $operator_import->writeOperatorsToEtl( );
+
+
+
+
 
 /*****************************************************************************************************************
 

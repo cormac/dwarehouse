@@ -109,34 +109,6 @@ class CreateTables{
       , $cid
     );
     
-    $this->create_sql['merge_region'] = sprintf(
-      'CREATE TABLE merge_region (
-        %sRegionID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        RegionId int,
-        RegionName varchar(50),
-        CountryID int
-      );'
-      , $cid
-    );
-    
-    $this->create_sql['merge_country'] = sprintf(
-      'CREATE TABLE merge_country (
-        %sCountryID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        CountryId int,
-        CountryName varchar(50),
-        ContinentID int
-      );'
-      , $cid
-    );
-    
-    $this->create_sql['merge_continent'] = sprintf(
-      'CREATE TABLE merge_continent (
-        %sContinentID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        ContinentID int,
-        ContinentName varchar(50)
-      );'
-      , $cid
-    );
     
     $this->create_sql['merge_hotel_manager'] = sprintf(
       'CREATE TABLE merge_hotel_manager (
