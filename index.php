@@ -2,7 +2,7 @@
 include( 'krumo/class.krumo.php' );
 
 $vars = array( 'ct', 'cust_import', 'hotel_import',  );
-$classes = array( 'mysqlwrapper', 'transform', 'operators', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer', 'holiday' );
+$classes = array( 'mysqlwrapper', 'transform', 'operators', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'printer', 'holiday', 'holidaydetails' );
 
 foreach ( $classes as $class ){
   $file = 'classes/class.' . $class . '.php';
@@ -19,7 +19,7 @@ $location_import        = new LocationTransformation( $verbose );
 $office_import          = new OfficeTransformation( $verbose );
 $operator_import        = new OperatorTransformation( $verbose );
 $holiday_import         = new HolidayTransformation( $verbose );
-$holiday_derails_import = new HolidayDetailsTransformation( true );
+$holiday_details_import = new HolidayDetailsTransformation( true );
 
 
 $ct->buildCreateStatements();
@@ -68,11 +68,22 @@ $location_import->importLocationTableContents();
 
 /*****************************************************************************************************************
 
-  OPERATOR IMPORT
+  HOLIDAY IMPORT
 
 *****************************************************************************************************************/
 
 $holiday_import->writeHolidaysToEtl( );
+
+
+/*****************************************************************************************************************
+
+  HOLIDAY DETAILS IMPORT
+
+*****************************************************************************************************************/
+
+$holiday_details_import->writeHolidayDetailsToEtl( );
+
+
 
 
 /*****************************************************************************************************************
