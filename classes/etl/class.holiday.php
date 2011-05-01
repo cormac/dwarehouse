@@ -16,7 +16,7 @@ class HolidayTransformation extends Transformer{
    *
    */
   public function writeHolidaysToEtl(){
-    $this->printer->output( '<h1>Office Translation</h1>' );
+    $this->printer->output( '<h1>Holiday Translation</h1>' );
     
     //WRITE TO MERGE TABLE
     $this->writeGBHolidayToEtl();
