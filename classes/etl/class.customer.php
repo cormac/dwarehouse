@@ -14,11 +14,11 @@ class CustomerTransformation extends Transformer{
     $this->printer->output( '<h2>write errors to their own table</h2>' );
     $base_query = '
     INSERT INTO ETLErrors( CustomerID, Age, originatingTable) 
-    SELECT CustomerID, Age,  (\'%s\') as originatingTable FROM vi_customers 
+    SELECT CustomerID, Age,  (\'%s\') as originatingTable FROM %S 
     WHERE Age < %d OR Age > %d';
-    $error_queries['vi_customers'] = sprintf( $base_query, 'vi_customers', 18, 120 );
-    $error_queries['gb_customers'] = sprintf( $base_query, 'gb_customers', 18, 120 );
-    $error_queries['mt_customers'] = sprintf( $base_query, 'mt_customers', 18, 120 );
+    $error_queries['vi_customers'] = sprintf( $base_query, 'vi_customers', 'vi_customers', 18, 120 );
+    $error_queries['gb_customers'] = sprintf( $base_query, 'gb_customers', 'gb_customers', 18, 120 );
+    $error_queries['mt_customers'] = sprintf( $base_query, 'mt_customers', 'mt_customers', 18, 120 );
     
     foreach ($error_queries as $error_query){
 

@@ -17,12 +17,12 @@ $etl_classes = array( 'transform', 'operators', 'createtables' , 'customer' , 'o
 
 foreach ( $etl_classes as $class ){
   $file = 'classes/etl/class.' . $class . '.php';
-  include( $file );
+  require( $file );
 }
 
 echo( '<h1>ETL Phase</h1>' );
 
-$verbose                = false;
+$verbose                = true;
 $ct                     = new CreateTables( $verbose );
 $cust_import            = new CustomerTransformation( $verbose );
 $hotel_import           = new HotelTransformation( $verbose );

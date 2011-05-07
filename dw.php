@@ -11,4 +11,32 @@ Updated Date  :
 Description   :
 *****************************************************************************************************************/
 
-$dw_classes = array(  );
+$dw_classes = array( 'createdwtables', 'hierarchy' );
+
+foreach ( $dw_classes as $class ){
+  $file = 'classes/dw/class.' . $class . '.php';
+  include( $file );
+}
+
+
+
+$verbose          = false;
+$dw_table_creator = new CreateDwTables( $verbose );
+$hierarchy        = new ManagerHierarchy( $verbose );
+
+
+/*****************************************************************************************************************
+
+  CREATE TABLES
+
+*****************************************************************************************************************/
+
+$dw_table_creator->buildCreateStatements();
+
+/*****************************************************************************************************************
+
+  MANAGER HIERARCHY
+
+*****************************************************************************************************************/
+
+$hierarchy->createHierarchy();
