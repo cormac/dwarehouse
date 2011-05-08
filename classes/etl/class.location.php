@@ -7,6 +7,7 @@ class LocationTransformation extends Transformer{
    *
    */
   public function importLocationTableContents(){
+    $this->addCities();
     $this->printer->output( '<h1>Location Translation</h1>' );
     $this->printer->output('<h2>Import Continent table</h2>');
     $query = 
@@ -20,6 +21,29 @@ class LocationTransformation extends Transformer{
 
     $this->mw_import->executeQuery($query);
   }
+  
+  public function addCities(){
+    $this->printer->output('<h3>Here I added extra cities into the mt_city table to deal with values 
+    contained in the other tables that were missing from my travel. This would probably be better done in the etl phase </h3>');
+    $query = "INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (43, 'Innsbruck', 37)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (44, 'Salzburg', 38)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (45, 'Wien', 39)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (46, 'Lienz', 40)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (47, 'Lisbon', 41)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (48, 'Porto', 42)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (49, 'Madrid', 43)
+      INSERT INTO mt_city (CityID, CityName, RegionID)
+      VALUES (50, 'Barcelona', 44);";
+      $this->mw_import->executeQuery($query);
+  }
+  
   
 }
 

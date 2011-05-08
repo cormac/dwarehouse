@@ -33,18 +33,26 @@ class CustomerTransformation extends Transformer{
     
     //IMPORT DATA INTO TEMP TABLE
 
-    $insert_queries['temp_viaggi'] = 'INSERT INTO merge_customers ( customerID, CName, CSurname, Age, Gender, CountryID )
-     SELECT customerID, Cname, Csurname, Age, IF(Gender=\'male\', 0, 1), mt_country.CountryID FROM vi_customers 
-     JOIN mt_country ON mt_country.CountryName = vi_customers.CountryID
+    $insert_queries['temp_viaggi'] = sprintf(
+    'INSERT INTO merge_customers ( customerID, CName, CSurname, Age, Gender, CountryID, origin )
+     SELECT customerID, Cname, Csurname, Age, IF(Gender=\'male\', 0, 1), mt_country.CountryID, %d AS origin FROM vi_customers 
+     LEFT JOIN mt_country ON mt_country.CountryName = vi_customers.CountryID
      WHERE Age > 17 AND Age < 121
-    ;';
+    ;', VI );
     $this->printer->output('<h2>Customers</h2>');
     
+    for ($i = 20; $i < 23; $i++)
+    {
+      $insert_queries['viaggi_' . $i] = sprintf(
+    'INSERT INTO merge_customers ( customerID, CName, CSurname, Age, Gender, CountryID, origin )
+    VALUES (%d, \'dummy\', \'dummy\', 30, 0, 1, %d)', $i, VI ); 
+      
+    }
     
     
     $this->printer->output('<h3>insert temporary data</h3>'); 
     foreach ($insert_queries as $insert_query){
-    
+      
        $this->mw_import->executeQuery( $insert_query );
        
     }
@@ -57,10 +65,10 @@ class CustomerTransformation extends Transformer{
    */
   public function writeMTCustomerToEtl(){
     $this->printer->output('<h2>My Travel</h2>');
-    $update_to_merge_table_query = 
+    $update_to_merge_table_query = sprintf(
     'INSERT INTO merge_customers 
-    (customerID, Cname, Csurname, Age, Gender, CountryID) 
-    SELECT customerID, Cname, Csurname, Age, Gender, CountryID FROM MT_Customers;';
+    (customerID, Cname, Csurname, Age, Gender, CountryID, origin ) 
+    SELECT customerID, Cname, Csurname, Age, Gender, CountryID, %d AS origin FROM MT_Customers;', MT );
     
     $this->printer->output( '<h3>write to merge mt</h3>' ); 
 
@@ -79,13 +87,20 @@ class CustomerTransformation extends Transformer{
     // WRITE TO TEMP TABLE
     
     $this->printer->output('<h2>Customers</h2>');
-    $insert_queries['gb_customer'] = 'INSERT INTO merge_customers ( customerID, CName, CSurname, Age, Gender, CountryID  )
-     SELECT customerID, Cname, Csurname, Age,  IF(Gender = \'male\', 0, 1 ), mt_country.CountryID FROM gb_customers 
-     JOIN mt_country ON mt_country.CountryName = gb_customers.CountryID
-     WHERE Age > 18 AND Age < 120;';
+    $insert_queries['gb_customer'] = sprintf(
+    'INSERT INTO merge_customers ( customerID, CName, CSurname, Age, Gender, CountryID, origin )
+     SELECT customerID, Cname, Csurname, Age,  IF(Gender = \'male\', 0, 1 ), mt_country.CountryID, %d AS origin FROM gb_customers 
+     LEFT JOIN mt_country ON mt_country.CountryName = gb_customers.CountryID
+     WHERE Age > 18 AND Age < 120;', GB );
     
 
-    
+    for ($i = 20; $i < 23; $i++)
+    {
+      $insert_queries['viaggi_' . $i] = sprintf(
+    'INSERT INTO merge_customers ( customerID, CName, CSurname, Age, Gender, CountryID, origin )
+    VALUES (%d, \'dummy\', \'dummy\', 30, 0, 1, %d)', $i, GB ); 
+      
+    }
     
     $this->printer->output('<h3>insert to merge</h3>'); 
     foreach ($insert_queries as $insert_query){

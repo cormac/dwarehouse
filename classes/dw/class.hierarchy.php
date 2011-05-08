@@ -110,7 +110,7 @@ class ManagerHierarchy extends Transformer{
     if(count( $paths ) ){
       $this->parse_tree($paths, 0, ($stop +1 ) );
     }else{
-      krumo ($this->h_queries );
+      foreach ($this->h_queries as $query)echo $query . '<br>';
     }
   }
   

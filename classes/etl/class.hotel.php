@@ -21,12 +21,13 @@ class HotelTransformation extends Transformer{
     $this->printer->output( '<h1>Hotel Translation</h2>' );
     $this->printer->output( '<h2>GoodBye.com</h2>' );
     // IMPORT THE DATA FROM ORIGINAL TABLE
-    $insert_query = 'INSERT INTO temp_gb_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, str_category, ManagerID) 
+    $insert_query = 
+    'INSERT INTO temp_gb_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, str_category, ManagerID) 
     SELECT CONVERT(HotelID, SIGNED) AS hotel, Hname, HAddress, Telephone, NRoom, mt_city.CityID, Category, 
     (SELECT ManagerID FROM mt_hotelmanager WHERE ManagerName =\'Mary\' AND ManagerSurname=\'Summer\' ) as ManagerID 
     FROM gb_hotel
-    JOIN gb_city ON gb_city.CityID = gb_hotel.CityID
-    JOIN mt_city ON gb_city.CityName = mt_city.CityName';
+    LEFT JOIN gb_city ON gb_city.CityID = gb_hotel.CityID
+    LEFT JOIN mt_city ON gb_city.CityName = mt_city.CityName';
     
     $this->printer->output (
       '<h3> Insert </h3>
@@ -48,8 +49,9 @@ class HotelTransformation extends Transformer{
     
     //WRITE TO MERGE TABLES
     $this->printer->output('<h3> write to merge </h3>' );
-    $merge_query = 'INSERT INTO merge_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID) 
-    SELECT HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID FROM temp_gb_hotel';
+    $merge_query = sprintf(
+    'INSERT INTO merge_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID, origin) 
+    SELECT HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID, %d AS origin FROM temp_gb_hotel', GB );
     
     $this->printer->output('<h3>write to merge gb</h3>'); 
     
@@ -67,8 +69,9 @@ class HotelTransformation extends Transformer{
     
     
     //WRITE TO MERGE TABLES
-    $merge_query = 'INSERT INTO merge_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID) 
-    SELECT HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID FROM mt_hotel';
+    $merge_query = sprintf(
+    'INSERT INTO merge_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID, origin) 
+    SELECT HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID, %d AS origin FROM mt_hotel', MT );
     
     $this->printer->output('<h3>write to merge mt</h3>'); 
     
@@ -84,8 +87,8 @@ class HotelTransformation extends Transformer{
     SELECT HotelID AS hotel, Hname, HAddress, Telephone, NRoom, mt_city.CityID, Category, 
       (SELECT ManagerID FROM mt_hotelmanager WHERE ManagerName =\'John\' AND ManagerSurname=\'Smith\' ) as ManagerID
     FROM vi_hotel
-    JOIN vi_city ON vi_city.CityID = vi_hotel.CityID
-    JOIN mt_city ON vi_city.CityName = mt_city.CityName';
+    LEFT JOIN vi_city ON vi_city.CityID = vi_hotel.CityID
+    LEFT JOIN mt_city ON vi_city.CityName = mt_city.CityName';
     
     
     $this->mw_import->executeQuery( $insert_query );
@@ -103,8 +106,9 @@ class HotelTransformation extends Transformer{
     
     //WRITE TO MERGE TABLES
     $this->printer->output('<h3> write to merge </h3>' );
-    $merge_query = 'INSERT INTO merge_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID) 
-    SELECT HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID FROM temp_viaggi_hotel';
+    $merge_query = sprintf(
+    'INSERT INTO merge_hotel (HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID, origin) 
+    SELECT HotelID, Hname, HAddress, Telephone, NRoom, CityID, Category, ManagerID, %d AS origin FROM temp_viaggi_hotel', VI );
     $this->printer->output('<h3>write to merge gb</h3>'); 
     
     $this->mw_import->executeQuery( $merge_query );

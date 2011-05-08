@@ -29,9 +29,9 @@ class HolidayDetailsTransformation extends Transformer{
    */
   private function writeGBHolidayDetailsToEtl(){
     $this->printer->output('<h2>GoodBye.com</h2>');
-    $query = 
-    'INSERT INTO merge_holiday_details( HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons )
-     SELECT HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, 0 AS Price_Extra, Persons FROM gb_holidaydetails;';
+    $query = sprintf(
+    'INSERT INTO merge_holiday_details( HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons, origin )
+     SELECT HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, 0 AS Price_Extra, Persons, %d as origin FROM gb_holidaydetails;', GB );
     $this->mw_import->executeQuery( $query );
   }
   
@@ -40,9 +40,9 @@ class HolidayDetailsTransformation extends Transformer{
    */
   private function writeMTHolidayDetailsToEtl(){
     $this->printer->output('<h2>MyTravel.com</h2>');
-    $query = 
-    'INSERT INTO merge_holiday_details( HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons )
-     SELECT HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons FROM mt_holidaydetails;';
+    $query = sprintf(
+    'INSERT INTO merge_holiday_details( HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons, origin )
+     SELECT HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons, %d as origin FROM mt_holidaydetails;', MT );
     $this->mw_import->executeQuery( $query );
   }
   
@@ -51,9 +51,9 @@ class HolidayDetailsTransformation extends Transformer{
    */
   private function writeVIHolidayDetailsToEtl(){
     $this->printer->output('<h2>Viaggi</h2>');
-    $query = 
-    'INSERT INTO merge_holiday_details( HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons )
-     SELECT HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons FROM vi_holidaydetails;';
+    $query = sprintf(
+    'INSERT INTO merge_holiday_details( HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons, origin )
+     SELECT HolidayDetailsID, HolidayID, Nigths, HotelID, Price_per_Night, Price_Extra, Persons, %d as origin FROM vi_holidaydetails;', VI );
     $this->mw_import->executeQuery( $query );
   }
   

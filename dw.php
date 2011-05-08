@@ -11,7 +11,7 @@ Updated Date  :
 Description   :
 *****************************************************************************************************************/
 
-$dw_classes = array( 'createdwtables', 'hierarchy' );
+$dw_classes = array( 'createdwtables', 'hierarchy', 'dimension_upload' );
 
 foreach ( $dw_classes as $class ){
   $file = 'classes/dw/class.' . $class . '.php';
@@ -20,10 +20,10 @@ foreach ( $dw_classes as $class ){
 
 
 
-$verbose          = false;
+$verbose          = true;
 $dw_table_creator = new CreateDwTables( $verbose );
 $hierarchy        = new ManagerHierarchy( $verbose );
-
+//$dim_upload       = new DimensionUpload( $verbose );
 
 /*****************************************************************************************************************
 
@@ -32,6 +32,14 @@ $hierarchy        = new ManagerHierarchy( $verbose );
 *****************************************************************************************************************/
 
 $dw_table_creator->buildCreateStatements();
+
+/*****************************************************************************************************************
+
+  UPLOAD DATA
+
+*****************************************************************************************************************/
+
+//$upload->write_to_warehouse();
 
 /*****************************************************************************************************************
 

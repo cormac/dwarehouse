@@ -18,19 +18,26 @@ class OperatorTransformation extends Transformer{
    *
    */
   public function writeOperatorsToEtl(){
-    $this->printer->output( '<h1>Operator and Manager Translation</h1>' );
+    $this->printer->output( '<h1>Operator, Office and Manager Translation</h1>' );
     
-    $insert_queries['gb'] = 
-    'INSERT INTO merge_operators (OperatorID, OName, OSurname, Salary, OfficeId)
-     SELECT OperatorID, OName, OSurname, Salary, OfficeId FROM gb_operators';
+    $insert_queries['gb'] = sprintf(
+    'INSERT INTO merge_operators_offices (OperatorID, OName, OSurname, Salary, OfficeName, CityID, OType, origin )
+     SELECT OperatorID, OName, OSurname, Salary, OfficeName, mt_city.CityID, 0 AS OType, %d as origin FROM gb_operators
+     LEFT JOIN gb_offices ON gb_offices.OfficeId = gb_operators.OfficeId
+     LEFT JOIN gb_city ON gb_offices.CityID = gb_city.CityID
+     LEFT JOIN mt_city ON gb_city.CityName = mt_city.CityName;', GB );
     
-    $insert_queries['mt'] = 
-    'INSERT INTO merge_operators (OperatorID, OName, OSurname, Salary, OfficeId)
-     SELECT OperatorID, OName, OSurname, Salary, OfficeId FROM mt_operators';
+    $insert_queries['mt'] = sprintf(
+    'INSERT INTO merge_operators_offices ( OperatorID, OName, OSurname, Salary, OfficeName, CityID, OType, origin )
+     SELECT OperatorID, OName, OSurname, Salary, OfficeName, CityID, OType, %d as origin FROM mt_operators
+     LEFT JOIN mt_offices ON mt_offices.OfficeId = mt_operators.OfficeId;', MT);
     
-    $insert_queries['vi'] = 
-    'INSERT INTO merge_operators (OperatorID, OName, OSurname, Salary, OfficeId)
-     SELECT OperatorID, OName, OSurname, Salary, OfficeId FROM vi_operators';
+    $insert_queries['vi'] = sprintf(
+    'INSERT INTO merge_operators_offices (OperatorID, OName, OSurname, Salary, OfficeName, CityID, OType, origin)
+     SELECT OperatorID, OName, OSurname, Salary, OfficeName, mt_city.CityID, 1 AS OType, %d as origin FROM vi_operators
+     LEFT JOIN vi_offices ON vi_offices.OfficeId = vi_operators.OfficeId
+     LEFT JOIN vi_city ON vi_offices.CityID = vi_city.CityID
+     LEFT JOIN mt_city ON vi_city.CityName = mt_city.CityName;', VI );
     
     $insert_queries['mt_managers'] = 
     'INSERT INTO merge_hotel_manager( ManagerID, ManagerName, ManagerSurname, ResponsibleID )

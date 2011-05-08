@@ -71,6 +71,7 @@ class CreateTables{
     $this->create_sql['merge_customers'] = sprintf( 
     'CREATE TABLE merge_customers (
     %sCustomerID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    origin int,
     customerID int,
     Cname varchar(50),
     Csurname varchar(50),
@@ -82,6 +83,7 @@ class CreateTables{
     $this->create_sql['merge_hotel'] = sprintf(
       'CREATE TABLE merge_hotel (
       %sHotelID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+      origin int,
       HotelID int,
       Hname varchar(50),
       HAddress varchar(200),
@@ -124,6 +126,7 @@ class CreateTables{
     $this->create_sql['merge_holiday'] = sprintf(
       'CREATE TABLE merge_holiday (
         %sHolidayID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        origin int,
         HolidayID int,
         CustomerID int,
         Date_From varchar(10),
@@ -137,6 +140,7 @@ class CreateTables{
       'CREATE TABLE merge_holiday_details (
         %sHolidayDetailsID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
         HolidayDetailsID int,
+        origin int,
         HolidayID int,
         Nigths int,
         HotelID int,
@@ -147,29 +151,22 @@ class CreateTables{
       , $cid
     );
     
-    $this->create_sql['merge_operators'] = sprintf(
-      'CREATE TABLE merge_operators (
+    $this->create_sql['merge_operators_offices'] = sprintf(
+      'CREATE TABLE merge_operators_offices (
         %sOperatorsID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        origin int,
         operatorId int,
         Oname varchar(50),
         OSurname varchar(50),
         Salary float,
-        OfficeId int
-      );'
-      , $cid
-    );
-    
-    $this->create_sql['merge_offices'] = sprintf(
-      'CREATE TABLE merge_offices (
-        %sOfficesID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        OfficeId int,
-        OfficeName varchar(50),
-        OAddress varchar(50),
-        CityID int,
+        OfficeName varchar(50), 
+        CityID int, 
         OType int
       );'
       , $cid
     );
+    
+    
    
     
     

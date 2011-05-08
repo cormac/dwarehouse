@@ -12,7 +12,7 @@ Description   :
 *****************************************************************************************************************/
 
 $vars = array( 'ct', 'cust_import', 'hotel_import',  );
-$etl_classes = array( 'transform', 'operators', 'createtables' , 'customer' , 'office', 'hotel', 'location', 'holiday', 'holidaydetails' );
+$etl_classes = array( 'transform', 'operators', 'createtables' , 'customer' ,  'hotel', 'location', 'holiday', 'holidaydetails' );
 
 
 foreach ( $etl_classes as $class ){
@@ -22,12 +22,13 @@ foreach ( $etl_classes as $class ){
 
 echo( '<h1>ETL Phase</h1>' );
 
-$verbose                = true;
+$verbose                = false;
 $ct                     = new CreateTables( $verbose );
+$location_import        = new LocationTransformation( $verbose );
 $cust_import            = new CustomerTransformation( $verbose );
 $hotel_import           = new HotelTransformation( $verbose );
-$location_import        = new LocationTransformation( $verbose );
-$office_import          = new OfficeTransformation( $verbose );
+
+
 $operator_import        = new OperatorTransformation( $verbose );
 $holiday_import         = new HolidayTransformation( $verbose );
 $holiday_details_import = new HolidayDetailsTransformation( $verbose );
@@ -38,6 +39,14 @@ $ct->createTempTables();
 $ct->createErrorTable();
 $cust_import->separateErrors();
 
+
+/*****************************************************************************************************************
+
+  LOCATION IMPORT
+
+*****************************************************************************************************************/
+
+$location_import->importLocationTableContents();
 
 /*****************************************************************************************************************
 
@@ -59,23 +68,8 @@ $hotel_import->writeGBHotelToEtl();
 $hotel_import->writeViaggiHotelToEtl();
 $hotel_import->writeMTHotelToEtl();
 
-/*****************************************************************************************************************
 
-  OFFICE IMPORT
 
-*****************************************************************************************************************/
-
-$office_import->writeGBOfficeToEtl();
-$office_import->writeMTOfficeToEtl();
-$office_import->writeViaggiOfficeToEtl();
-
-/*****************************************************************************************************************
-
-  LOCATION IMPORT
-
-*****************************************************************************************************************/
-
-$location_import->importLocationTableContents();
 
 /*****************************************************************************************************************
 

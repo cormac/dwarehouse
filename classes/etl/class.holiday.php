@@ -29,9 +29,9 @@ class HolidayTransformation extends Transformer{
    */
   private function writeGBHolidayToEtl(){
     $this->printer->output('<h2>GoodBye.com</h2>');
-    $query = 
-    'INSERT INTO merge_holiday( HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID)
-     SELECT HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID FROM gb_holiday;';
+    $query = sprintf(
+    'INSERT INTO merge_holiday( HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID, origin)
+     SELECT HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID, %d as origin FROM gb_holiday;', GB );
     $this->mw_import->executeQuery( $query );
   }
   
@@ -40,9 +40,9 @@ class HolidayTransformation extends Transformer{
    */
   private function writeMTHolidayToEtl(){
     $this->printer->output('<h2>MyTravel.com</h2>');
-    $query = 
-    'INSERT INTO merge_holiday( HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID)
-     SELECT HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID FROM mt_holiday;';
+    $query = sprintf(
+    'INSERT INTO merge_holiday( HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID, origin)
+     SELECT HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID, %d as origin FROM mt_holiday;', MT );
     $this->mw_import->executeQuery( $query );
   }
   
@@ -51,9 +51,9 @@ class HolidayTransformation extends Transformer{
    */
   private function writeVIHolidayToEtl(){
     $this->printer->output('<h2>Viaggi</h2>');
-    $query = 
-    'INSERT INTO merge_holiday( HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID)
-     SELECT HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID FROM vi_holiday;';
+    $query = sprintf(
+    'INSERT INTO merge_holiday( HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID, origin)
+     SELECT HolidayID, CustomerID, Date_From, Date_To, Totalprice, OperatorID, %d as origin FROM vi_holiday;', VI );
     $this->mw_import->executeQuery( $query );
   }
   
