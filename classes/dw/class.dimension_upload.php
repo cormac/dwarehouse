@@ -2,7 +2,7 @@
 /*****************************************************************************************************************
 
 Created By    : Cormac McGuire - cromac
-Created Date  : create manager hierarchy
+Created Date  : upload dimension data
 Description   : 
                  
                 
@@ -11,7 +11,7 @@ Updated Date  :
 Description   :
 *****************************************************************************************************************/
 
-class DWUpload extends Transformer{
+class DimensionUpload extends Transformer{
   
   private $insert_queries = array();
   /**

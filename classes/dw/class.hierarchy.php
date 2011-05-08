@@ -16,14 +16,45 @@ class ManagerHierarchy extends Transformer{
   private $managers;
   private $tree;
   private $h_queries;
+  public $bridge_queries = array(
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 1, 0, 0, 1);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 2, 1, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 3, 1, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 4, 2, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 5, 2, 1, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 6, 2, 1, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 7, 2, 1, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (1, 8, 3, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (2, 2, 0, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (2, 4, 1, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (2, 5, 1, 1, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (2, 6, 1, 1, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (2, 8, 2, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (3, 3, 0, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (3, 7, 1, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (4, 4, 0, 0, 0);",
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (4, 8, 1, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (5, 5, 0, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (6, 6, 0, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (7, 7, 0, 1, 0);",
+    
+    "INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) VALUES (8, 8, 0, 1, 0);",
+    
+  );
   /**
    *
    */
   public function createHierarchy(){
-    $this->get_managers();
+    /*$this->get_managers();
     krumo( $this->managers );
-    $this->createBridgeQueries();
-    //$this->run_bridge_queries();
+    $this->createBridgeQueries();*/
+    $this->run_bridge_queries();
   }
   
   
@@ -31,20 +62,21 @@ class ManagerHierarchy extends Transformer{
    *
    */
   private function createBridgeQueries(){
-    $head = $this->getHeadManager();
-
-    $this->get_tree( $head->ManagerName );
+    
 
     
     
   }
+  
+  
+  
   
   /**
    *
    */
   private function get_tree( $mid ){
     $query = sprintf( 
-    'SELECT t1.ManagerName AS \'0\', t2.ManagerName as \'1\', t3.ManagerName as \'2\', t4.ManagerName as \'3\' 
+    'SELECT t1.ManagerID AS \'0\', t2.ManagerID as \'1\', t3.ManagerID as \'2\', t4.ManagerID as \'3\' 
     FROM merge_hotel_manager AS t1 
     LEFT JOIN merge_hotel_manager AS t2 ON t2.ResponsibleID = t1.ManagerID 
     LEFT JOIN merge_hotel_manager AS t3 ON t3.ResponsibleID = t2.ManagerID 
@@ -82,7 +114,7 @@ class ManagerHierarchy extends Transformer{
         // krumo($records);
          if( $thing && $flag && !array_search( array( $mgr, $thing ), $records ) ){     
            $this->h_queries[] = 
-           sprintf( 'INSERT INTO dw_manager_hierarchy (parent, child, levels, bottom, top) 
+           sprintf( 'INSERT INTO dwarehouse.manager_bridge (parent, child, levels, bottom, top) 
            VALUES (\'%s\', \'%s\', %d, %d, %d);', $mgr, $thing, $k, $my_bottom, $my_top );
            $records[] = array( $mgr, $thing );
            $my_top = 0;

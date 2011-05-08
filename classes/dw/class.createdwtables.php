@@ -20,11 +20,16 @@ class CreateDwTables{
    *
    */  
   private function clearTables($tables, $label){
+   ///$this->mw_import->executeQuery(  'DROP DATABASE dwarehouse' );
+   //$this->mw_import->executeQuery(  'CREATE DATABASE dwarehouse' );
+   
     $this->printer->output( '<h3>' . $label . '</h3>' );
-    foreach ($tables as $key => $statement){
-      $clear_statement = sprintf('DROP TABLE IF EXISTS %s;', $key);
+    foreach ($this->create_sql as $key => $statement){
+      $clear_statement = sprintf('DROP TABLE IF EXISTS dwarehouse.%s;', $key);
       $this->mw_import->executeQuery( $clear_statement );
     }
+   
+   
     
   }
   
@@ -58,7 +63,7 @@ class CreateDwTables{
     
     $this->create_sql['dim_manager'] = 
     'CREATE  TABLE IF NOT EXISTS `dwarehouse`.`dim_manager` (
-    `manager_id` INT NOT NULL AUTO_INCREMENT ,
+    `manager_id` VARCHAR(10) NOT NULL ,
     `manager_name` VARCHAR(45) NULL ,
     `manager_surname` VARCHAR(45) NULL ,
     PRIMARY KEY (`manager_id`) )';
@@ -66,18 +71,11 @@ class CreateDwTables{
     
     $this->create_sql['manager_bridge'] = 
     'CREATE  TABLE IF NOT EXISTS `dwarehouse`.`manager_bridge` (
-    `manager_id` INT NOT NULL ,
     `parent` INT NULL ,
     `child` INT NULL ,
     `levels` INT NULL ,
     `bottom` TINYINT NULL ,
-    `top` TINYINT NULL ,
-    INDEX `fk_manager_bridge_dim_manager1` (`manager_id` ASC) ,
-    CONSTRAINT `fk_manager_bridge_dim_manager1`
-    FOREIGN KEY (`manager_id` )
-    REFERENCES `dwarehouse`.`dim_manager` (`manager_id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)';
+    `top` TINYINT NULL)';
     
     $this->create_sql['dim_location'] = 
     'CREATE  TABLE IF NOT EXISTS `dwarehouse`.`dim_location` (
@@ -109,81 +107,18 @@ class CreateDwTables{
     `customer_gender` TINYINT NULL ,
     PRIMARY KEY (`customer_id`) )';
   
-    $this->create_sql['dim_date'] = 
-    'CREATE  TABLE IF NOT EXISTS `dwarehouse`.`dim_date` (
-    `date_id` INT NOT NULL ,
-    `year` INT NULL ,
-    `month` INT NULL ,
-    `day` INT NULL ,
-    PRIMARY KEY (`date_id`) )';
     
     $this->create_sql['holiday_detail_fact_table'] = 
     'CREATE  TABLE IF NOT EXISTS `dwarehouse`.`holiday_detail_fact_table` (
-    `total_price` INT NULL ,
+    `total_price` FLOAT,
     `nights` INT NULL ,
-    `persons` INT NULL ,
+    `persons` INT NULL,
     `hotel_id` INT NOT NULL ,
-    `manager_id` INT NOT NULL ,
-    `hotel_location_id` INT NOT NULL ,
-    `operator_location_id` INT NOT NULL ,
-    `customer_location_id` INT NOT NULL ,
-    `operator_id` INT NOT NULL ,
-    `customer_id` INT NOT NULL ,
-    `date_from_id` INT NOT NULL ,
-    `date_to_id` INT NOT NULL ,
-    INDEX `fk_holiday_detail_fact_table_manager_bridge1` (`manager_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_location1` (`hotel_location_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_location2` (`operator_location_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_operator1` (`operator_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_customer1` (`customer_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_location3` (`customer_location_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_date1` (`date_from_id` ASC) ,
-    INDEX `fk_holiday_detail_fact_table_dim_date2` (`date_to_id` ASC) ,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_hotel`
-      FOREIGN KEY (`hotel_id` )
-      REFERENCES `dwarehouse`.`dim_hotel` (`hotel_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_manager_bridge1`
-      FOREIGN KEY (`manager_id` )
-      REFERENCES `dwarehouse`.`manager_bridge` (`manager_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_location1`
-      FOREIGN KEY (`hotel_location_id` )
-      REFERENCES `dwarehouse`.`dim_location` (`location_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_location2`
-      FOREIGN KEY (`operator_location_id` )
-      REFERENCES `dwarehouse`.`dim_location` (`location_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_operator1`
-      FOREIGN KEY (`operator_id` )
-      REFERENCES `dwarehouse`.`dim_operator` (`operator_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_customer1`
-      FOREIGN KEY (`customer_id` )
-      REFERENCES `dwarehouse`.`dim_customer` (`customer_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_location3`
-      FOREIGN KEY (`customer_location_id` )
-      REFERENCES `dwarehouse`.`dim_location` (`location_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_date1`
-      FOREIGN KEY (`date_from_id` )
-      REFERENCES `dwarehouse`.`dim_date` (`date_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-    CONSTRAINT `fk_holiday_detail_fact_table_dim_date2`
-      FOREIGN KEY (`date_to_id` )
-      REFERENCES `dwarehouse`.`dim_date` (`date_id` )
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION)';
+    `manager_id` VARCHAR(10) NULL,
+    `hotel_location_id` INT NOT NULL,
+    `operator_location_id` INT NOT NULL,
+    `operator_id` INT NOT NULL,
+    `customer_id` INT NOT NULL);';
     
     
     

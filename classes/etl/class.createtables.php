@@ -91,7 +91,9 @@ class CreateTables{
       Telephone varchar(20),
       NRoom int,
       CityID int,
-      ManagerID varchar(10)
+      ManagerID varchar(10),
+      LocationID INT,
+      SHotelManagerID int
       );'
       , $cid
     );
@@ -161,7 +163,8 @@ class CreateTables{
         Salary float,
         OfficeName varchar(50), 
         CityID int, 
-        OType int
+        OType int,
+        LocationID INT
       );'
       , $cid
     );
@@ -224,9 +227,11 @@ class CreateTables{
       NRoom int,
       CityID int,
       ManagerID varchar(10),
+      SManagerID int,
       str_category varchar(8),
-      int_mt_cityID int
-      
+      int_mt_cityID int,
+      LocationID int,
+      SHotelManagerID int
     );
     ';
     $this->temp_table_sql['temp_viaggi_hotel'] = '
@@ -239,8 +244,11 @@ class CreateTables{
       NRoom int,
       CityID int,
       ManagerID varchar(10),
+      SManagerID int,
       str_category varchar(8),
-      int_mt_cityID int
+      int_mt_cityID int,
+      LocationID int,
+      SHotelManagerID int
     );
     ';
     

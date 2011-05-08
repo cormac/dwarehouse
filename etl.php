@@ -26,7 +26,7 @@ $verbose                = false;
 $ct                     = new CreateTables( $verbose );
 $location_import        = new LocationTransformation( $verbose );
 $cust_import            = new CustomerTransformation( $verbose );
-$hotel_import           = new HotelTransformation( $verbose );
+$hotel_import           = new HotelTransformation( true );
 
 
 $operator_import        = new OperatorTransformation( $verbose );
@@ -58,6 +58,16 @@ $cust_import->writeViaggiCustomerToEtl();
 $cust_import->writeMTCustomerToEtl();
 $cust_import->writeGBCustomerToEtl();
 
+
+
+/*****************************************************************************************************************
+
+  OPERATOR IMPORT
+
+*****************************************************************************************************************/
+
+$operator_import->writeOperatorsToEtl( );
+
 /*****************************************************************************************************************
 
   HOTEL IMPORT
@@ -87,18 +97,6 @@ $holiday_import->writeHolidaysToEtl( );
 *****************************************************************************************************************/
 
 $holiday_details_import->writeHolidayDetailsToEtl( );
-
-
-
-
-/*****************************************************************************************************************
-
-  OPERATOR IMPORT
-
-*****************************************************************************************************************/
-
-$operator_import->writeOperatorsToEtl( );
-
 
 
 
